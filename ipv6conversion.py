@@ -1,15 +1,11 @@
 ###########################################################
 #
 #  IP v. 6 Conversion
-#
-###########################################################
 
-#########################################
-#
 # This script will convert a full IPv.6 address to the shortened version.
 # It will also convert a shortened IPv.6 address to the full version.
 #
-#########################################
+##########################################################
 from time import sleep
 
 def main():
@@ -49,18 +45,39 @@ def __get_user(message):
     return False
 
 def lengthen(ip):
-    '''1111:2222::CCCC:DDDD'''
+    '''Returns full-length IPv6 address as string.'''
     ip_segs = ip.split(":")
     for i in range(0, 8-len(ip_segs)):
         ip_segs.insert(index(""), "0000")
+    ip_segs.pop(index(""))
     for seg in ip_segs:
         while len(seg) < 4:
             seg_lst = list(seg)
             seg_lst.insert(0, '0')
             seg = ''.join(seg_lst)
+    return ":".join(ip_segs)
 
 def shorten(ip):
-    pass
+    '''Returns shortened IPv6 address as string.'''
+    ip_segs = []
+    for seg in ip.split(":"):
+        ip_segs.append(seg.lstrip("0"))
+    short = ":".join(ip_segs)
+    # Find longest run of ":"
+    longest = 0
+    length = 0
+    for char in short:
+        if char == ":":
+            length += 1
+        else:
+            if longest < length: longest = length
+            length = 0
+    # Replace longest run of ":" with proper count
+    run = ":"*longest
+    mult = 1 if short.find(run) == 0 else 2
+    short = short.replace(run, ":"*mult, 1)
+    # Add in 0's to empty segments that are not part of the "::".
+            
 
 def fatality():
     print("Fatal Error!!! Input was not correctly validated.")
